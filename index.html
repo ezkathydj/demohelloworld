@@ -1,118 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Thêm đoạn này vào <head> trong file chat.html -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-
-<script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-  apiKey: "AIzaSyB9wMkfPKiavgaZctCrqdeuhB3rSH-L174",
-  authDomain: "helloworld-56b24.firebaseapp.com",
-  databaseURL: "https://helloworld-56b24-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "helloworld-56b24",
-  storageBucket: "helloworld-56b24.appspot.com",
-  messagingSenderId: "772008532181",
-  appId: "1:772008532181:web:4b518ea8aaa9372c14aa5c",
-  measurementId: "G-DB4Q1W81RK"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-</script>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Page</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background-color: #f0f0f0;
         }
         .login-container {
-            background-color: white;
+            background: #fff;
             padding: 20px;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 300px;
+            width: 90%;
+            max-width: 400px;
         }
         .login-container h2 {
-            text-align: center;
             margin-bottom: 20px;
+            font-size: 1.5em;
         }
-        .login-container label {
-            font-weight: bold;
-        }
-        .login-container input[type="text"],
-        .login-container input[type="password"] {
+        .login-container input {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
+            box-sizing: border-box;
         }
-        .login-container input[type="submit"] {
+        .login-container button {
             width: 100%;
             padding: 10px;
-            background-color: #28a745;
-            color: white;
+            background-color: #007BFF;
+            color: #fff;
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 1em;
         }
-        .login-container input[type="submit"]:hover {
-            background-color: #218838;
+        .login-container button:hover {
+            background-color: #0056b3;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        .welcome {
+            display: none;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-
     <div class="login-container">
         <h2>Login</h2>
-        <form id="loginForm">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <input type="submit" value="Login">
-        </form>
-        <p id="message"></p>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <div class="error" id="error"></div>
+    </div>
+    <div class="welcome" id="welcome">
+        <h2>Welcome, <span id="user-name"></span>!</h2>
     </div>
 
     <script>
-        // Tạo tài khoản cố định
-        const accounts = [
-            { username: "user1", password: "password1" },
-            { username: "user2", password: "password2" }
-        ];
+        const users = {
+            'user1': 'password1',
+            'user2': 'password2'
+        };
 
-        // Xử lý sự kiện khi form được submit
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Ngăn form gửi đi mặc định
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const error = document.getElementById('error');
+            const welcome = document.getElementById('welcome');
+            const loginContainer = document.querySelector('.login-container');
 
-            // Lấy giá trị người dùng nhập
-            const usernameInput = document.getElementById('username').value;
-            const passwordInput = document.getElementById('password').value;
-
-            // Kiểm tra xem username và password có khớp với account nào không
-            const account = accounts.find(acc => acc.username === usernameInput && acc.password === passwordInput);
-
-            if (account) {
-                // Chuyển hướng đến trang chat nếu đăng nhập thành công
-                window.location.href = "chat.html";
+            if (users[username] === password) {
+                document.getElementById('user-name').textContent = username;
+                loginContainer.style.display = 'none';
+                welcome.style.display = 'block';
+                error.textContent = '';
             } else {
-                document.getElementById('message').textContent = "Invalid username or password.";
-                document.getElementById('message').style.color = "red";
+                error.textContent = 'Invalid username or password';
             }
-        });
+        }
     </script>
-
 </body>
 </html>
