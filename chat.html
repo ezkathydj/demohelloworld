@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
+    <script src="https://unpkg.com/@cometchat-pro/chat@latest/dist/cometchat-pro-chat.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,33 +77,64 @@
     </div>
 
     <script>
-        const username = localStorage.getItem('username');
-        const socket = new WebSocket('wss://example-websocket-server.com'); // Thay thế bằng URL WebSocket thực tế
+        // CometChat initialization
+        const appID = '2636234001f96a8f'; // Thay thế bằng App ID của bạn
+        const apiKey = '5e8c0e5280a23b7e4fa5b47863ebc28889b0029c'; // Thay thế bằng API Key của bạn
+        const region = 'in'; // Thay thế bằng Region của bạn
 
-        socket.addEventListener('message', function (event) {
-            const messages = document.getElementById('messages');
-            const messageElement = document.createElement('div');
-            messageElement.textContent = event.data;
-            messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight;
+        CometChat.init(appID).then(() => {
+            console.log('CometChat Initialized successfully');
+        }).catch((error) => {
+            console.error('CometChat Initialization failed with error:', error);
         });
 
-        function sendMessage() {
-            const messageInput = document.getElementById('message');
-            const messageText = messageInput.value.trim();
+        const loginUser = localStorage.getItem('username');
+        if (!loginUser) {
+            window.location.href = 'index.html'; // Chuyển hướng về trang đăng nhập nếu không có người dùng
+        }
 
-            if (messageText) {
-                socket.send(`${username}: ${messageText}`);
-                messageInput.value = '';
+        CometChat.login(loginUser, apiKey).then((user) => {
+            console.log('Login Successful:', user);
+            const messages = document.getElementById('messages');
+
+            CometChat.addMessageListener('listener', new CometChat.MessageListener({
+                onTextMessageReceived: (textMessage) => {
+                    const messageElement = document.createElement('div');
+                    messageElement.textContent = textMessage.data.text;
+                    messages.appendChild(messageElement);
+                    messages.scrollTop = messages.scrollHeight;
+                }
+            }));
+
+            function sendMessage() {
+                const messageInput = document.getElementById('message');
+                const messageText = messageInput.value.trim();
+
+                if (messageText) {
+                    const receiverID = 'RECEIVER_USERNAME'; // Thay thế bằng tên người dùng nhận
+                    const message = new CometChat.TextMessage(receiverID, messageText, CometChat.RECEIVER_TYPE.USER);
+                    CometChat.sendMessage(message).then((message) => {
+                        console.log('Message sent successfully:', message);
+                        messageInput.value = '';
+                    }).catch((error) => {
+                        console.error('Message sending failed with error:', error);
+                    });
+                }
             }
-        }
 
-        function logout() {
-            // Xóa tên người dùng khỏi Local Storage
-            localStorage.removeItem('username');
-            // Chuyển hướng về trang đăng nhập
-            window.location.href = 'index.html';
-        }
+            window.sendMessage = sendMessage;
+            window.logout = () => {
+                CometChat.logout().then(() => {
+                    localStorage.removeItem('username');
+                    window.location.href = 'index.html';
+                }).catch((error) => {
+                    console.error('Logout failed with error:', error);
+                });
+            };
+
+        }).catch((error) => {
+            console.error('Login failed with error:', error);
+        });
     </script>
 </body>
 </html>
