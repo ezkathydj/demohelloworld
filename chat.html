@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,43 +12,13 @@
             height: 100vh;
             margin: 0;
             background-color: #f0f0f0;
+            align-items: center; /* Căn giữa theo chiều ngang */
+            justify-content: center; /* Căn giữa theo chiều dọc */
         }
         .chat-container {
             display: flex;
             flex-direction: column;
-            height: 100%;
-        }
-        .messages {
-            flex: 1;
-            padding: 10px;
-            overflow-y: auto;
-            background: #fff;
-            border-bottom: 1px solid #ccc;
-        }
-        .input-container {
-            display: flex;
-            border-top: 1px solid #ccc;
-            padding: 10px;
-            background: #fff;
-        }
-        .input-container input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .input-container button {
-            padding: 10px;
-            background-color: #007BFF;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-        .input-container button:hover {
-            background-color: #0056b3;
+            align-items: center; /* Căn giữa nội dung */
         }
         .logout-button {
             padding: 10px;
@@ -59,7 +28,6 @@
             border-radius: 4px;
             cursor: pointer;
             margin: 10px;
-            align-self: flex-end;
         }
         .logout-button:hover {
             background-color: #c82333;
@@ -69,11 +37,6 @@
 <body>
     <div class="chat-container">
         <button class="logout-button" onclick="logout()">Logout</button>
-        <div class="messages" id="messages"></div>
-        <div class="input-container">
-            <input type="text" id="message" placeholder="Type your message...">
-            <button onclick="sendMessage()">Send</button>
-        </div>
     </div>
 
     <!-- Mã nhúng Tawk.to -->
@@ -89,29 +52,6 @@
     </script>
 
     <script>
-        // CometChat initialization and chat functionality
-        // Replace this with your actual chat integration code or service
-
-        const socket = io(); // Kết nối với server Socket.io
-
-        socket.on('chat message', (msg) => {
-            const messages = document.getElementById('messages');
-            const messageElement = document.createElement('div');
-            messageElement.textContent = msg;
-            messages.appendChild(messageElement);
-            messages.scrollTop = messages.scrollHeight;
-        });
-
-        function sendMessage() {
-            const messageInput = document.getElementById('message');
-            const messageText = messageInput.value.trim();
-
-            if (messageText) {
-                socket.emit('chat message', messageText); // Gửi tin nhắn đến server
-                messageInput.value = '';
-            }
-        }
-
         function logout() {
             localStorage.removeItem('username');
             window.location.href = 'index.html';
