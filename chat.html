@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Page</title>
-    <script src="https://unpkg.com/@cometchat-pro/chat@latest/dist/cometchat-pro-chat.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -76,65 +76,59 @@
         </div>
     </div>
 
-    <script>
-        // CometChat initialization
-        const appID = '2636234001f96a8f'; // Thay thế bằng App ID của bạn
-        const apiKey = '5e8c0e5280a23b7e4fa5b47863ebc28889b0029c'; // Thay thế bằng API Key của bạn
-        const region = 'in'; // Thay thế bằng Region của bạn
+    <!-- Mã nhúng Tawk.to -->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {};
+        var Tawk_LoadStart = new Date();
+        (function() {
+            var script = document.createElement("script");
+            script.src = 'https://embed.tawk.to/YOUR_TAWKTO_ID/DEFAULT';
+            script.async = true;
+            document.head.appendChild(script);
+        })();
+    </script>
 
-        CometChat.init(appID).then(() => {
-            console.log('CometChat Initialized successfully');
-        }).catch((error) => {
-            console.error('CometChat Initialization failed with error:', error);
+    <script>
+        // CometChat initialization and chat functionality
+        // Replace this with your actual chat integration code or service
+
+        const socket = io(); // Kết nối với server Socket.io
+
+        socket.on('chat message', (msg) => {
+            const messages = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = msg;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
         });
 
-        const loginUser = localStorage.getItem('username');
-        if (!loginUser) {
-            window.location.href = 'index.html'; // Chuyển hướng về trang đăng nhập nếu không có người dùng
+        function sendMessage() {
+            const messageInput = document.getElementById('message');
+            const messageText = messageInput.value.trim();
+
+            if (messageText) {
+                socket.emit('chat message', messageText); // Gửi tin nhắn đến server
+                messageInput.value = '';
+            }
         }
 
-        CometChat.login(loginUser, apiKey).then((user) => {
-            console.log('Login Successful:', user);
-            const messages = document.getElementById('messages');
-
-            CometChat.addMessageListener('listener', new CometChat.MessageListener({
-                onTextMessageReceived: (textMessage) => {
-                    const messageElement = document.createElement('div');
-                    messageElement.textContent = textMessage.data.text;
-                    messages.appendChild(messageElement);
-                    messages.scrollTop = messages.scrollHeight;
-                }
-            }));
-
-            function sendMessage() {
-                const messageInput = document.getElementById('message');
-                const messageText = messageInput.value.trim();
-
-                if (messageText) {
-                    const receiverID = 'RECEIVER_USERNAME'; // Thay thế bằng tên người dùng nhận
-                    const message = new CometChat.TextMessage(receiverID, messageText, CometChat.RECEIVER_TYPE.USER);
-                    CometChat.sendMessage(message).then((message) => {
-                        console.log('Message sent successfully:', message);
-                        messageInput.value = '';
-                    }).catch((error) => {
-                        console.error('Message sending failed with error:', error);
-                    });
-                }
-            }
-
-            window.sendMessage = sendMessage;
-            window.logout = () => {
-                CometChat.logout().then(() => {
-                    localStorage.removeItem('username');
-                    window.location.href = 'index.html';
-                }).catch((error) => {
-                    console.error('Logout failed with error:', error);
-                });
-            };
-
-        }).catch((error) => {
-            console.error('Login failed with error:', error);
-        });
+        function logout() {
+            localStorage.removeItem('username');
+            window.location.href = 'index.html';
+        }
     </script>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/66e3df5f50c10f7a00a94226/1i7l213nk';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+<!--End of Tawk.to Script-->
 </body>
 </html>
