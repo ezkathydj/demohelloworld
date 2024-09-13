@@ -62,20 +62,24 @@
     </div>
 
     <script>
-        // Lấy tên người dùng từ Local Storage
         const username = localStorage.getItem('username');
+        const socket = new WebSocket('wss://example-websocket-server.com'); // Thay thế bằng URL WebSocket thực tế
+
+        socket.addEventListener('message', function (event) {
+            const messages = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.textContent = event.data;
+            messages.appendChild(messageElement);
+            messages.scrollTop = messages.scrollHeight;
+        });
 
         function sendMessage() {
             const messageInput = document.getElementById('message');
             const messageText = messageInput.value.trim();
 
             if (messageText) {
-                const messages = document.getElementById('messages');
-                const messageElement = document.createElement('div');
-                messageElement.textContent = `${username}: ${messageText}`;
-                messages.appendChild(messageElement);
+                socket.send(`${username}: ${messageText}`);
                 messageInput.value = '';
-                messages.scrollTop = messages.scrollHeight;
             }
         }
     </script>
