@@ -51,10 +51,6 @@
             color: red;
             margin-top: 10px;
         }
-        .welcome {
-            display: none;
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -64,9 +60,6 @@
         <input type="password" id="password" placeholder="Password">
         <button onclick="login()">Login</button>
         <div class="error" id="error"></div>
-    </div>
-    <div class="welcome" id="welcome">
-        <h2>Welcome, <span id="user-name"></span>!</h2>
     </div>
 
     <script>
@@ -79,14 +72,12 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const error = document.getElementById('error');
-            const welcome = document.getElementById('welcome');
-            const loginContainer = document.querySelector('.login-container');
 
             if (users[username] === password) {
-                document.getElementById('user-name').textContent = username;
-                loginContainer.style.display = 'none';
-                welcome.style.display = 'block';
-                error.textContent = '';
+                // Lưu tên người dùng vào Local Storage để sử dụng trong trang chat
+                localStorage.setItem('username', username);
+                // Chuyển hướng đến trang chat
+                window.location.href = 'chat.html';
             } else {
                 error.textContent = 'Invalid username or password';
             }
